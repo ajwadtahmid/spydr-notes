@@ -39,19 +39,21 @@ void main() {
   test('purging a target preserves the broken link reference', () async {
     final sourceId = await repository.createNote(title: 'Source', content: '');
     final targetId = await repository.createNote(title: 'Target', content: '');
-    await database.into(database.noteLinks).insert(
-      NoteLinksCompanion.insert(
-        sourceNoteId: sourceId,
-        occurrenceIndex: 0,
-        targetNoteId: Value(targetId),
-        targetIdText: Value(targetId),
-        rawTitle: 'Target',
-      ),
-    );
+    await database
+        .into(database.noteLinks)
+        .insert(
+          NoteLinksCompanion.insert(
+            sourceNoteId: sourceId,
+            occurrenceIndex: 0,
+            targetNoteId: Value(targetId),
+            targetIdText: Value(targetId),
+            rawTitle: 'Target',
+          ),
+        );
 
-    await (database.delete(database.notes)
-          ..where((note) => note.id.equals(targetId)))
-        .go();
+    await (database.delete(
+      database.notes,
+    )..where((note) => note.id.equals(targetId))).go();
 
     final link = (await database.select(database.noteLinks).get()).single;
     expect(link.targetNoteId, isNull);

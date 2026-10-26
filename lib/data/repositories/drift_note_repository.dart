@@ -40,6 +40,14 @@ class DriftNoteRepository implements NoteRepository {
   }
 
   @override
+  Future<NoteRecord?> findById(String id) async {
+    final row = await (_database.select(
+      _database.notes,
+    )..where((note) => note.id.equals(id))).getSingleOrNull();
+    return row == null ? null : _toRecord(row);
+  }
+
+  @override
   Future<List<NoteRecord>> searchNotes(String query) async {
     final matchExpression = _literalMatchExpression(query);
     if (matchExpression.isEmpty) return [];

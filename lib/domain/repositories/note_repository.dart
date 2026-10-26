@@ -5,5 +5,7 @@ abstract interface class NoteRepository {
 
   Future<String> createNote({required String title, required String content});
 
+  Future<NoteRecord?> findById(String id);
+
   Future<List<NoteRecord>> searchNotes(String query);
 }
